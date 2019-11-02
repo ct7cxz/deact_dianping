@@ -11,7 +11,7 @@
         <result property="subTitle" column="subtitle"></result>
         <result property="price" column="price"></result>
         <result property="distance" column="distance"></result>
-        <result property="mumber" column="mumber"></result>
+        <result property="number" column="number"></result>
         <result property="star" column="star"></result>
         <result property="desc" column="descs"></result>
         <result property="city" column="city_code"></result>
@@ -31,7 +31,7 @@
 
     <!--查找当前页面-->
     <select id="findCurrentByPage" resultMap="business">
-        select b.id,b.img_file_name,b.title,b.subtitle,b.price,b.distance,b.mumber,b.star,b.`descs` ,b.city
+        select b.id,b.img_file_name,b.title,b.subtitle,b.price,b.distance,b.number,b.star,b.`descs` ,b.city
         city_code,b.category category_code,
         d_city.name city_name,d_category.name category_name
         from business b
@@ -78,6 +78,19 @@
         update business set img_file_name=#{imgFileName},title=#{title},subtitle=#{subTitle},
         price=#{price},distance=#{distance},descs=#{desc},city=#{city},category=#{category}
         where id = #{id}
+    </update>
+
+    <update id="updateStar">
+        update business b,
+
+        (select o.business_id,sum(c.star) star_num,count(*) comment_num from comment c,orders o where c.orders_id=o.id and c.create_time &lt;= #{endTime}
+        <if test="startTime != null">
+            and c.create_time &gt; #{startTime}
+        </if>
+        group by o.business_id)t
+
+        set b.star_total_num = b.star_total_num + t.star_num,b.comment_total_num = b.comment_total_num + t.comment_num
+        where b.id=t.business_id
     </update>
 
 </mapper>

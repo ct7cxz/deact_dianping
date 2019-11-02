@@ -16,7 +16,15 @@ public class Business extends BaseBean implements Serializable {
     private String desc;
     private String city;
     private String category;
+	private Integer number;
 
+	public Integer getNumber() {
+		return number;
+	}
+
+	public void setNumber(Integer number) {
+		this.number = number;
+	}
 
 	@Override
 	public String toString() {

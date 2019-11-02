@@ -6,15 +6,9 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.ct.cache.TokenCache;
 import org.ct.constant.ApiCodeEnum;
-import org.ct.dto.AdDto;
-import org.ct.dto.ApiCodeDto;
-import org.ct.dto.BusinessDto;
-import org.ct.dto.BusinessListDto;
-import org.ct.service.IAdService;
-import org.ct.service.IBusinessService;
-import org.ct.service.IMemberService;
+import org.ct.dto.*;
+import org.ct.service.*;
 import org.ct.util.CommontUtil;
-import org.ct.util.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +30,12 @@ public class ApiController {
 
     @Autowired
     private IMemberService memberService;
+
+    @Autowired
+    private IOrderService orderService;
+
+    @Autowired
+    private ICommentService commentService;
 
     @Value("${pageAd}")
     private Integer pageAd;
@@ -118,7 +118,7 @@ public class ApiController {
             if (memberService.save(phone, code)) {
                 //调用对应的通道，将用户信息发送到对应的手机号码上
                 if (memberService.send(phone, code)) {
-                    apiCodeDto = new ApiCodeDto(ApiCodeEnum.SUCCESS.getError(),code);
+                    apiCodeDto = new ApiCodeDto(ApiCodeEnum.SUCCESS.getError(), code);
                 } else {
                     apiCodeDto = new ApiCodeDto(ApiCodeEnum.SEND_FAIL);
                 }
@@ -143,21 +143,88 @@ public class ApiController {
         ApiCodeDto apiCodeDto;
         //取出缓存的验证码信息
         String saveCode = memberService.getCode(phone);
-        if(saveCode!=null){
-            if (saveCode.length() == 6){
+        if (saveCode != null) {
+            if (saveCode.length() == 6) {
                 //如果校验成功，则生成一个32位token信息
                 String token = CommontUtil.uuid();
                 //将生成信息存放到TokenCache中
-                TokenCache.getInstance().saveToken(token,phone);
+                TokenCache.getInstance().saveToken(token, phone);
                 //将生成的token信息返回给前端页面
                 apiCodeDto = new ApiCodeDto(ApiCodeEnum.SUCCESS);
-            }else {
+                apiCodeDto.setToken(token);
+            } else {
                 apiCodeDto = new ApiCodeDto(ApiCodeEnum.CODE_ERROR);
             }
-        }else {
+        } else {
             apiCodeDto = new ApiCodeDto(ApiCodeEnum.CODE_INVALID);
         }
         return apiCodeDto;
+    }
+
+    /**
+     * 买单
+     *
+     * @param orderForBuyDto
+     * @return
+     */
+    @RequestMapping(path = "/order", method = RequestMethod.POST)
+    public ApiCodeDto order(OrderForBuyDto orderForBuyDto) {
+        //校验token信息
+        ApiCodeDto apiCodeDto;
+        Long phone = TokenCache.getInstance().getPhone(orderForBuyDto.getToken());
+        if (orderForBuyDto.getToken() != null && orderForBuyDto.getUsername().equals(phone)) {
+            //检验通过
+            OrdersDto ordersDto = new OrdersDto();
+            Long memberId = memberService.getIdByPhone(orderForBuyDto.getToken());
+            ordersDto.setNum(orderForBuyDto.getNum());
+            ordersDto.setPrice(orderForBuyDto.getPrice());
+            ordersDto.setBusinessId(orderForBuyDto.getId());
+            ordersDto.setMemberId(memberId);
+            orderService.add(ordersDto);
+            apiCodeDto = new ApiCodeDto(ApiCodeEnum.SUCCESS);
+        } else {
+            apiCodeDto = new ApiCodeDto(ApiCodeEnum.NOT_LOGGED);
+        }
+        return apiCodeDto;
+    }
+
+    /**
+     * 订单列表
+     */
+    @RequestMapping(value = "/orderlist/{username}", method = RequestMethod.GET)
+    public List<OrdersDto> orderlist(@PathVariable("username") Long username) {
+        // 根据手机号取出会员ID
+        Long memberId = memberService.getIdBy(username);
+        return orderService.getListByMemberId(memberId);
+    }
+
+    /**
+     * 提交评论
+     */
+    @RequestMapping(value = "/submitComment", method = RequestMethod.POST)
+    public ApiCodeDto submitComment(CommentForSubmitDto dto) {
+        ApiCodeDto result;
+        // TODO 需要完成的步骤：
+        // 1、校验登录信息：token、手机号
+        Long phone = memberService.getIdByPhone(dto.getToken());
+        if (phone != null && phone.equals(dto.getUsername())) {
+            // 2、根据手机号取出会员ID
+            Long memberId = memberService.getIdBy(phone);
+            // 3、根据提交上来的订单ID获取对应的会员ID，校验与当前登录的会员是否一致
+            OrdersDto ordersDto = orderService.getById(dto.getId());
+            if(ordersDto.getMemberId().equals(memberId)) {
+                // 4、保存评论
+                commentService.add(dto);
+                result = new ApiCodeDto(ApiCodeEnum.SUCCESS);
+                // TODO
+                // 5、还有一件重要的事未做
+            } else {
+                result = new ApiCodeDto(ApiCodeEnum.NO_AUTH);
+            }
+        } else {
+            result = new ApiCodeDto(ApiCodeEnum.NOT_LOGGED);
+        }
+        return result;
     }
 
 

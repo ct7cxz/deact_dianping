@@ -2,6 +2,8 @@ package org.ct.dao;
 
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface IMemberDao {
     /**
@@ -10,4 +12,6 @@ public interface IMemberDao {
      * @return
      */
     Long exists(Long phone);
+
+    List<Long> getIdByPhone(Long phone);
 }

@@ -15,4 +15,8 @@ public interface IMemberService {
     boolean send(Long phone, String code);
 
     String getCode(Long phone);
+
+    Long getIdByPhone(String token);
+
+    Long getIdBy(Long username);
 }

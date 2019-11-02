@@ -8,4 +8,8 @@
         select count(*) from member where phone = #{phone};
     </select>
 
+    <select id="getIdByPhone" resultType="Long">
+        select id from member where phone = #{phone}
+    </select>
+
 </mapper>

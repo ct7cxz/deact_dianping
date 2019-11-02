@@ -1,18 +1,23 @@
 package org.ct.bean;
 
-public class Comment {
-    
-    private String username;
-    private String comment;
-    private Integer star;
+import java.util.Date;
 
-    public String getUsername() {
-        return username;
-    }
+public class Comment extends BaseBean{
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+	private Long id;
+	private String comment;
+	private Integer star;
+	private Long ordersId;
+	private Date createTime;
+	private Orders orders;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public String getComment() {
 		return comment;
@@ -28,5 +33,29 @@ public class Comment {
 
 	public void setStar(Integer star) {
 		this.star = star;
+	}
+
+	public Long getOrdersId() {
+		return ordersId;
+	}
+
+	public void setOrdersId(Long ordersId) {
+		this.ordersId = ordersId;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public Orders getOrders() {
+		return orders;
+	}
+
+	public void setOrders(Orders orders) {
+		this.orders = orders;
 	}
 }

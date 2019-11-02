@@ -7,48 +7,62 @@ import java.io.Serializable;
 
 @JsonInclude(Include.NON_NULL)
 public class Orders extends BaseBean implements Serializable {
-	
-	private Long id;
-    private String img;
-    private String title;
-    private Integer count;
-    private String price;
+
+    private Long id;
+    private Long memberId;
+    private Long businessId;
+    private Integer num;
     private Integer commentState;
-    
-    public String getImg() {
-        return img;
+    private Double price;
+    private Business business;
+    private Member member;
+
+    public Long getId() {
+        return id;
     }
-    public void setImg(String img) {
-        this.img = img;
+    public void setId(Long id) {
+        this.id = id;
     }
-    public String getTitle() {
-        return title;
+    public Long getMemberId() {
+        return memberId;
     }
-    public void setTitle(String title) {
-        this.title = title;
+    public void setMemberId(Long memberId) {
+        this.memberId = memberId;
     }
-    public Integer getCount() {
-        return count;
+    public Long getBusinessId() {
+        return businessId;
     }
-    public void setCount(Integer count) {
-        this.count = count;
+    public void setBusinessId(Long businessId) {
+        this.businessId = businessId;
     }
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public String getPrice() {
-		return price;
-	}
-	public void setPrice(String price) {
-		this.price = price;
-	}
-	public Integer getCommentState() {
-		return commentState;
-	}
-	public void setCommentState(Integer commentState) {
-		this.commentState = commentState;
-	}
+    public Integer getNum() {
+        return num;
+    }
+    public void setNum(Integer num) {
+        this.num = num;
+    }
+    public Integer getCommentState() {
+        return commentState;
+    }
+    public void setCommentState(Integer commentState) {
+        this.commentState = commentState;
+    }
+    public Double getPrice() {
+        return price;
+    }
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+    public Business getBusiness() {
+        return business;
+    }
+    public void setBusiness(Business business) {
+        this.business = business;
+    }
+    public Member getMember() {
+        return member;
+    }
+    public void setMember(Member member) {
+        this.member = member;
+    }
 }

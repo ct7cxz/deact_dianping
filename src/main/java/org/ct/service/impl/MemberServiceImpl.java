@@ -2,12 +2,15 @@ package org.ct.service.impl;
 
 
 import org.ct.cache.CodeCache;
+import org.ct.cache.TokenCache;
 import org.ct.dao.IMemberDao;
 import org.ct.service.IMemberService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class MemberServiceImpl implements IMemberService {
@@ -63,6 +66,25 @@ public class MemberServiceImpl implements IMemberService {
     @Override
     public String getCode(Long phone) {
         return CodeCache.getInstance().getCode(phone);
+    }
+
+    @Override
+    public Long getIdByPhone(String token) {
+        Long phone = TokenCache.getInstance().getPhone(token);
+        List<Long> idByPhone = memberDao.getIdByPhone(phone);
+        if(idByPhone!=null && idByPhone.size()==1){
+            return idByPhone.get(0);
+        }
+        return null;
+    }
+
+    @Override
+    public Long getIdBy(Long username) {
+        List<Long> idByPhone = memberDao.getIdByPhone(username);
+        if(idByPhone!=null && idByPhone.size()==1){
+            return idByPhone.get(0);
+        }
+        return null;
     }
 
 }

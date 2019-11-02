@@ -6,7 +6,7 @@ import org.ct.constant.ApiCodeEnum;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiCodeDto {
 
-    private Integer error;
+    private Integer errno;
     private String msg;
     private String code;
     private String token;
@@ -15,13 +15,13 @@ public class ApiCodeDto {
     }
 
     public ApiCodeDto(Integer errno, String msg) {
-        this.error = errno;
+        this.errno = errno;
         this.msg = msg;
     }
 
     public ApiCodeDto(ApiCodeEnum apiCodeEnum) {
         this.msg = apiCodeEnum.getMsg();
-        this.error = apiCodeEnum.getError();
+        this.errno = apiCodeEnum.getError();
     }
 
     public ApiCodeDto code(String code){
@@ -42,12 +42,12 @@ public class ApiCodeDto {
         this.token = token;
     }
 
-    public Integer getError() {
-        return error;
+    public Integer getErrno() {
+        return errno;
     }
 
-    public void setError(Integer error) {
-        this.error = error;
+    public void setErrno(Integer errno) {
+        this.errno = errno;
     }
 
     public String getMsg() {
