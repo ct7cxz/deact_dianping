@@ -1,7 +1,6 @@
 package org.ct.service;
 
 import org.ct.bean.Page;
-import org.ct.dto.CommentForSubmitDto;
 import org.ct.dto.CommentListDto;
 
 public interface ICommentService {

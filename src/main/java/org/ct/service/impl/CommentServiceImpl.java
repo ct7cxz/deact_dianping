@@ -8,7 +8,6 @@ import org.ct.constant.CommentStateConst;
 import org.ct.dao.ICommentDao;
 import org.ct.dao.IOrderDao;
 import org.ct.dto.CommentDto;
-import org.ct.dto.CommentForSubmitDto;
 import org.ct.dto.CommentListDto;
 import org.ct.service.ICommentService;
 import org.springframework.beans.BeanUtils;
